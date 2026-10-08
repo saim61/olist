@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: capstone_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # 5434 on the host: 5432 and 5433 are already taken by a native
+      # install and the Day 1-5 container.
+      - "${POSTGRES_HOST_PORT:-5434}:5432"
+    volumes:
+      - capstone_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    container_name: capstone_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      BATCH_CUTOFF: ${BATCH_CUTOFF:-2018-01-01}
+    volumes:
+      - .:/app
+      # The CSVs live in the parent project; mounted read-only so the
+      # 48 MB dataset is not duplicated.
+      - ../data/olist:/data/olist:ro
+      - capstone_marts:/app/marts
+    ports:
+      - "4040:4040"      # Spark UI
+    working_dir: /app
+    command: ["sleep", "infinity"]
+
+volumes:
+  capstone_pgdata:
+  capstone_marts:

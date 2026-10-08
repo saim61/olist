@@ -1,0 +1,1 @@
+"""Olist capstone batch pipeline."""

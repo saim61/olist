@@ -1,5 +1,3 @@
-# Python + JDK in one image: the pipeline and Spark both run here, so
-# there is no separate Spark cluster to stand up.
 FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

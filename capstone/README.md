@@ -78,6 +78,10 @@ inside the image.
 Two services: `postgres` (the warehouse) and `app` (Python + JDK + Spark).
 Spark runs in local mode inside `app` — there is no cluster to stand up.
 
+> **[docs/data-flow.md](docs/data-flow.md)** has rendered diagrams of the
+> write path, the read path (which layer answers which question), how a fact
+> row joins to its dimensions, and where each piece physically lives.
+
 ---
 
 ## Data model

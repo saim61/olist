@@ -7,8 +7,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      # 5434 on the host: 5432 and 5433 are already taken by a native
-      # install and the Day 1-5 container.
       - "${POSTGRES_HOST_PORT:-5434}:5432"
     volumes:
       - capstone_pgdata:/var/lib/postgresql/data
